@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:integrations_flutter/platform/mobile_service.dart';
-import 'package:integrations_flutter/platform/platform_view_mobile.dart';
+import 'package:integrations_flutter/platform/service.dart';
+
+import 'package:integrations_flutter/platform/dummy/platform_widget.dart'
+    if (dart.library.html) 'package:integrations_flutter/platform/web/platform_view_web.dart'
+    if (dart.library.io) 'package:integrations_flutter/platform/mobile/platform_view_mobile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -12,9 +15,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  var _counter = 0;
-  StreamSubscription? _subscription;
-  final service = PlatformService();
+  final service = getService();
+
+  final _textFieldController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +32,21 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
+              child: TextField(
+                controller: _textFieldController,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                child: const Text('Update'),
+                onPressed: _updateNativeText,
+              ),
+            ),
             Text(
-              'UI component from platform:',
+              'UI platform component:',
               style: style,
             ),
             const Center(
@@ -39,41 +55,13 @@ class _HomePageState extends State<HomePage> {
                 child: PlatformWidget(),
               ),
             ),
-            Text(
-              'Stream from platform:',
-              style: style,
-            ),
-            StreamBuilder<int>(
-              stream: service.getStream(),
-              builder: (context, snapshot) => Text(
-                '${snapshot.hasData ? snapshot.data : 'No data'}',
-                style: style,
-              ),
-            ),
-            Text(
-              'Value from platform:',
-              style: style,
-            ),
-            Text(
-              '$_counter',
-              style: style,
-            ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.get_app),
-        onPressed: _getValue,
-        heroTag: null,
       ),
     );
   }
 
-  Future<void> _getValue() async {
-    // _counter =
-    var counter = await service.getValue();
-    setState(() {
-      _counter = counter;
-    });
+  Future<void> _updateNativeText() async {
+    service.setValue(_textFieldController.text);
   }
 }

@@ -1,47 +1,24 @@
 package com.example.integrations_flutter
 
 import android.content.Context
-import android.content.Intent
-import android.text.Editable
-import android.text.TextWatcher
+import android.graphics.Color
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TableLayout
-import io.flutter.plugin.common.BinaryMessenger
+import android.widget.TextView
 import io.flutter.plugin.platform.PlatformView
-import kotlin.random.Random
 
-class AndroidEditTextView(context: Context, id: Int, creationParams: Map<String?, Any?>?, messenger: BinaryMessenger) : PlatformView {
+class NativeView(context: Context, id: Int, creationParams: Map<String?, Any?>?) : PlatformView {
 
-    private val editText: EditText = EditText(context)
-
-    private val intentName = "EVENTS"
-    private val intentMessageId = "CALL"
+    val textView: TextView = TextView(context)
 
     override fun getView(): View {
-        return editText
+        return textView
     }
 
-    override fun dispose() {
-    }
+    override fun dispose() {}
 
     init {
-        editText.textSize = 14f
-        editText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val intent = Intent(intentName)
-                intent.putExtra(intentMessageId, editText.text)
-                context.sendBroadcast(intent)
-            }
-
-        })
+        textView.setBackgroundColor(Color.rgb(255, 255, 255))
+        textView.setTextColor(Color.BLACK)
+        textView.text = "This text rendered on a native Android view (id: $id)"
     }
 }
