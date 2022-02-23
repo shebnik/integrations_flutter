@@ -19,6 +19,8 @@ class _HomePageState extends State<HomePage> {
 
   final _textFieldController = TextEditingController();
 
+  int? count;
+
   @override
   Widget build(BuildContext context) {
     final style = Theme.of(context).textTheme.headline6;
@@ -55,6 +57,17 @@ class _HomePageState extends State<HomePage> {
                 child: PlatformWidget(),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                child: const Text('Count characters (C++ method)'),
+                onPressed: _countCharacters,
+              ),
+            ),
+            Text(
+              'Total characters: $count',
+              style: style,
+            ),
           ],
         ),
       ),
@@ -63,5 +76,11 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _updateNativeText() async {
     service.setValue(_textFieldController.text);
+  }
+
+  void _countCharacters() {
+    setState(() {
+      count = service.countCharacters(_textFieldController.text);
+    });
   }
 }

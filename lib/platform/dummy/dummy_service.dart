@@ -1,8 +1,6 @@
 import 'package:integrations_flutter/platform/service.dart';
 
-class PlatformServiceImpl implements PlatformService {
+class PlatformServiceImpl extends PlatformService {
   @override
-  Future<void> setValue(String value) {
-    return Future(() => {});
-  }
+  void setValue(String value) {}
 }
