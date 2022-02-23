@@ -4,12 +4,11 @@ import androidx.annotation.NonNull
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugins.Pigeon
 
 class MainActivity : FlutterActivity() {
 
     private val androidViewId = "INTEGRATION_ANDROID"
-    private val methodChannel = "CALL_METHOD"
-    private val intentMessageId = "CALL"
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -21,12 +20,14 @@ class MainActivity : FlutterActivity() {
             .registry
             .registerViewFactory(androidViewId, nativeViewFactory)
 
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, methodChannel).setMethodCallHandler { call, result ->
-            if (call.method == intentMessageId) {
-                nativeViewFactory.nativeView.textView.text = call.arguments as String
-            } else {
-                result.notImplemented()
-            }
+        Pigeon.NativeApi.setup(flutterEngine.dartExecutor.binaryMessenger, MyNativeApi(nativeViewFactory = nativeViewFactory))
+    }
+
+    private class MyNativeApi(val nativeViewFactory: NativeViewFactory): Pigeon.NativeApi {
+
+        override fun setValue(value: String?) {
+            nativeViewFactory.nativeView.textView.text = value
         }
+
     }
 }
