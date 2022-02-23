@@ -1,6 +1,6 @@
 # flutter_module
 
-A new flutter module project.
+Flutter module
 
 ## Getting Started
 
